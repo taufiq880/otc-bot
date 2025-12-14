@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart2, Zap } from 'lucide-react';
+import { BarChart2, Zap, AlertTriangle } from 'lucide-react';
 import Uploader from './components/Uploader';
 import AnalysisCard from './components/AnalysisCard';
 import SettingsPanel from './components/SettingsPanel';
@@ -48,8 +48,10 @@ const App: React.FC = () => {
       // Pass settings to the service
       const result = await analyzeChartImage(base64Image, settings);
       setAnalysis(result);
-    } catch (err) {
-      setError("Failed to analyze chart. Please try again with a clearer screenshot.");
+    } catch (err: any) {
+      console.error("Full Error Object:", err);
+      // Show the actual error message from the service/API
+      setError(err instanceof Error ? err.message : "An unexpected error occurred. Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -101,8 +103,12 @@ const App: React.FC = () => {
             />
 
             {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
-                <strong>Error:</strong> {error}
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start space-x-3">
+                <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-red-400">Analysis Failed</h3>
+                    <p className="text-xs text-red-300/80 font-mono">{error}</p>
+                </div>
               </div>
             )}
 

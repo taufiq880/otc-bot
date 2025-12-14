@@ -11,8 +11,8 @@ const getAiClient = () => {
   if (ai) return ai;
   
   const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API Key is missing. Please check your environment variables.");
+  if (!apiKey || apiKey === "undefined" || apiKey === "") {
+    throw new Error("API Key is missing. Please add 'API_KEY' to your Vercel Environment Variables.");
   }
   
   ai = new GoogleGenAI({ apiKey });
@@ -100,7 +100,11 @@ const analysisSchema: Schema = {
 export const analyzeChartImage = async (base64Image: string, settings: AnalysisSettings): Promise<AnalysisResult> => {
   try {
     const client = getAiClient();
-    const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
+    
+    // Robust cleanup of base64 string
+    const cleanBase64 = base64Image.includes(",") 
+      ? base64Image.split(",")[1] 
+      : base64Image;
 
     const response = await client.models.generateContent({
       model: "gemini-2.5-flash",
@@ -157,8 +161,12 @@ export const analyzeChartImage = async (base64Image: string, settings: AnalysisS
 
     return JSON.parse(response.text) as AnalysisResult;
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Analysis failed:", error);
-    throw error;
+    if (error.message.includes("API Key is missing")) {
+        throw error; // Re-throw the clean error
+    }
+    // Re-throw with a potentially clearer message if possible, or just the original
+    throw error; 
   }
 };
