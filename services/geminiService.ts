@@ -1,11 +1,23 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AnalysisResult, AnalysisSettings } from "../types";
 
-// Declare process to satisfy TypeScript since we are using define plugin in Vite
+// Declare process to satisfy TypeScript
 declare const process: any;
 
-// Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Lazy initialization var
+let ai: GoogleGenAI | null = null;
+
+const getAiClient = () => {
+  if (ai) return ai;
+  
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please check your environment variables.");
+  }
+  
+  ai = new GoogleGenAI({ apiKey });
+  return ai;
+};
 
 const analysisSchema: Schema = {
   type: Type.OBJECT,
@@ -87,9 +99,10 @@ const analysisSchema: Schema = {
 
 export const analyzeChartImage = async (base64Image: string, settings: AnalysisSettings): Promise<AnalysisResult> => {
   try {
+    const client = getAiClient();
     const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
 
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model: "gemini-2.5-flash",
       contents: {
         parts: [
