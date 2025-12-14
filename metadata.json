@@ -1,0 +1,5 @@
+{
+  "name": "OTC Market Analyst Bot",
+  "description": "An AI-powered technical analysis tool for OTC markets. Upload chart screenshots to receive Buy/Sell signals based on price action and market structure.",
+  "requestFramePermissions": []
+}
