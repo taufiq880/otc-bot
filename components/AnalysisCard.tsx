@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnalysisResult, SignalType, IndicatorAnalysis } from '../types';
-import { TrendingUp, TrendingDown, Minus, Crosshair, Shield, Target, Activity, Gauge, Zap, Waves } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Activity, Gauge, Zap, Waves } from 'lucide-react';
 
 interface AnalysisCardProps {
   result: AnalysisResult | null;

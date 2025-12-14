@@ -1,6 +1,9 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AnalysisResult, AnalysisSettings } from "../types";
 
+// Declare process to satisfy TypeScript since we are using define plugin in Vite
+declare const process: any;
+
 // Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 

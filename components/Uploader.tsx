@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { UploadCloud, Image as ImageIcon, X } from 'lucide-react';
+import { UploadCloud, X } from 'lucide-react';
 
 interface UploaderProps {
   onImageSelected: (base64: string) => void;
